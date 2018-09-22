@@ -166,7 +166,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
       body: Stack(
         children: <Widget>[
           AnimatedOpacity(
-            opacity: (value > 3 && accidents != 0 && hospitals != 0) ? 1.0 : 0.0,
+            opacity: (value > 3 && accidents >= 5) ? 1.0 : 0.0,
             duration: Duration(milliseconds: 200),
             child: Container(
               decoration: BoxDecoration(
@@ -177,6 +177,38 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
                     Colors.red[500],
                     Colors.red[800],
                   ]
+                ),
+              ),
+            ),
+          ),
+          AnimatedOpacity(
+            opacity: (accidents >= 1 && accidents <= 3) ? 1.0 : 0.0,
+            duration: Duration(milliseconds: 200),
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    colors: <Color>[
+                      Colors.green[300],
+                      Colors.green[400],
+                      Colors.green[500],
+                      Colors.green[800],
+                    ]
+                ),
+              ),
+            ),
+          ),
+          AnimatedOpacity(
+            opacity: (accidents > 3 && accidents < 5) ? 1.0 : 0.0,
+            duration: Duration(milliseconds: 200),
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    colors: <Color>[
+                      Colors.yellow[300],
+                      Colors.yellow[400],
+                      Colors.yellow[500],
+                      Colors.yellow[800],
+                    ]
                 ),
               ),
             ),
@@ -196,14 +228,14 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
                     children: [
                       Column(
                         children: [
-                          Text('HIGH',
+                        (accidents != 0 && hospitals != 0) ? Text((accidents >= 1 && accidents <= 3) ? 'LOW' : ((accidents > 3 && accidents < 5) ? 'MEDIUM' : 'HIGH'),
                             style: TextStyle(
                               fontFamily: 'Oswald',
                               color: Colors.black,
                               fontSize: 60.0,
                               fontWeight: FontWeight.bold
                             ),
-                          ),
+                          ) : CircularProgressIndicator(),
                           Padding(
                             padding: EdgeInsets.only(top: 20.0),
                             child: Text('Accidents-per-month',
@@ -266,7 +298,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
                         ]
                       ),
                       AnimatedOpacity(
-                        opacity: (value > 3 && accidents != 0 && hospitals != 0) ? 1.0 : 0.0,
+                        opacity: (value > 3 && accidents >= 5) ? 1.0 : 0.0,
                         duration: Duration(milliseconds: 200),
                         child: Column(
                             children: [
