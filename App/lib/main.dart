@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'dart:async';
+import 'dart:math';
 import 'package:flutter/services.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -21,6 +22,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
   DocumentReference documentReference;
   int accidents;
   int hospitals;
+  bool routeError = false;
+  var accidentLatitude = 26.8422965;
+  var accidentLongitude = 75.5661535;
 
   StreamSubscription<Map<String, double>> _locationSubscription;
   Location _location = new Location();
@@ -64,6 +68,11 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
           setState(() {
             accidents = 0;
             hospitals = 0;
+            if(sqrt(pow(accidentLatitude - result["latitude"], 2) + pow(accidentLongitude - result["longitude"], 2)) <= 0.02) {
+              setState(() {
+                routeError = true;
+              });
+            }
             for(double i = double.parse((result["latitude"] - 0.0005).toStringAsFixed(7)); i <= double.parse((result["latitude"] + 0.0005).toStringAsFixed(7)); i = double.parse((i + 0.0001).toStringAsFixed(7))){
               for(double j = double.parse((result["longitude"] - 0.0005).toStringAsFixed(7)); j <= double.parse((result["longitude"] + 0.0005).toStringAsFixed(7)); j = double.parse((j + 0.0001).toStringAsFixed(7))){
                 print("${i.toString()}${j.toString()}");
@@ -114,6 +123,11 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
         setState(() {
           accidents = 0;
           hospitals = 0;
+          if(sqrt(pow(accidentLatitude - location["latitude"], 2) + pow(accidentLongitude - location["longitude"], 2)) <= 0.02) {
+            setState(() {
+              routeError = true;
+            });
+          }
           for(double i = double.parse((location["latitude"] - 0.0005).toStringAsFixed(7)); i <= double.parse((location["latitude"] + 0.0005).toStringAsFixed(7)); i = double.parse((i + 0.0001).toStringAsFixed(7))){
             for(double j = double.parse((location["longitude"] - 0.0005).toStringAsFixed(7)); j <= double.parse((location["longitude"] + 0.0005).toStringAsFixed(7));  j = double.parse((j + 0.0001).toStringAsFixed(7))){
               print("${i.toString()}${j.toString()}");
@@ -341,7 +355,51 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
               ),
             ),
           ),
-        ]
+          Column(
+              children: [
+                Expanded(child: Container()),
+                Padding(
+                  padding: EdgeInsets.only(bottom: 10.0),
+                  child: AnimatedOpacity(
+                    opacity: (routeError) ? 1.0 : 0.0,
+                    duration: Duration(seconds: 1),
+                    child: Container(
+                      height: 50.0,
+                      width: 300.0,
+                      child: Card(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+                        child: Padding(
+                          padding: EdgeInsets.all(10.0),
+                          child: Row(
+                            children: <Widget>[
+                              Text('WARNING!',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'Oswald',
+                                    fontSize: 17.0
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(left: 10.0),
+                                child: Text('Accident on nearby route',
+                                  style: TextStyle(
+                                    fontFamily: 'Oswald',
+                                    fontSize: 15.0,
+                                    fontStyle: FontStyle.italic,
+                                    fontWeight: FontWeight.w300
+                                  ),
+                                )
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+              ]
+          ),
+        ],
       ),
     );
   }
