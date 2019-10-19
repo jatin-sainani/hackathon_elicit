@@ -45,7 +45,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
         controller.reverse();
       else if(status == AnimationStatus.dismissed)
         controller.forward();
-    });
+    });//Animation
     controller.forward();
     initPlatformState();
 
