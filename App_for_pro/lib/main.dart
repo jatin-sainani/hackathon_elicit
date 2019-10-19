@@ -117,7 +117,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
                         Colors.red[400],
                         Colors.red[500],
                         Colors.red[800],
-                      ]
+                      ]//Providing Gradient
                   )
               ),
             ),
