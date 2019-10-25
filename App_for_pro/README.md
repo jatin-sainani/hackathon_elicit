@@ -1,6 +1,6 @@
 # hackathon_pro
 
-A new Flutter project.
+App for the professionals.
 
 ## Getting Started
 
